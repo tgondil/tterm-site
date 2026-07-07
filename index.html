@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tterm — the only window you need</title>
+<meta name="description" content="A terminal, a real browser, and Claude Code under one roof — and it rebuilds itself from inside. Free, for hobbyists.">
+<meta property="og:title" content="tterm — the only window you need">
+<meta property="og:description" content="A terminal, a real browser, and Claude Code under one roof. It edits itself and hot-reloads. Free, for hobbyists.">
+<link rel="canonical" href="https://tterm.sh/">
+<meta property="og:url" content="https://tterm.sh/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0e12'/%3E%3Crect x='8' y='8' width='5' height='16' fill='%237aa2f7'/%3E%3Cpath d='M17 21h8v3h-8z' fill='%23565f89'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0c0e12;
+    --panel: #12151c;
+    --raised: #1a1e28;
+    --line: #1e2431;
+    --text: #c8ccd4;
+    --bright: #e8ecf4;
+    --dim: #7c86a3;
+    --dimmer: #565f89;
+    --accent: #7aa2f7;
+    --accent-dim: #2e3c64;
+    --sp-lg: 64px;
+    --sp-xl: 112px;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  [id] { scroll-margin-top: 80px; }
+
+  /* ---- nav ---- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(30, 36, 49, 0.6);
+  }
+  .nav-inner {
+    max-width: 1120px; margin: 0 auto; padding: 0 24px;
+    height: 58px; display: flex; align-items: center; gap: 28px;
+  }
+  .wordmark {
+    font-family: var(--font-mono); font-size: 17px; font-weight: 600;
+    color: var(--bright); display: flex; align-items: center;
+  }
+  .wordmark .cursor {
+    display: inline-block; width: 8px; height: 17px; margin-left: 3px;
+    background: var(--accent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .wordmark .cursor { animation: blink 1.2s steps(1) infinite; }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .nav-links { display: flex; gap: 24px; margin-left: 16px; font-size: 14px; color: var(--dim); }
+  .nav-links a:hover { color: var(--bright); }
+  .nav-cta { margin-left: auto; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    border-radius: 999px; padding: 9px 18px; font-size: 14px; font-weight: 500;
+    border: 1px solid var(--line); color: var(--text);
+    transition: border-color .15s, background .15s, color .15s;
+  }
+  .pill:hover { border-color: var(--accent-dim); color: var(--bright); }
+  .pill.primary { background: var(--bright); color: #0b0d11; border-color: var(--bright); }
+  .pill.primary:hover { background: #fff; color: #000; }
+  .pill.small { padding: 7px 14px; font-size: 13px; }
+
+  /* ---- hero ---- */
+  header { padding: var(--sp-xl) 0 var(--sp-lg); position: relative; }
+  .hero-backdrop {
+    position: absolute; top: -36px; right: -48px;
+    width: min(900px, 70%); height: auto; opacity: 0.55;
+    pointer-events: none; user-select: none; z-index: -1;
+    -webkit-mask-image: radial-gradient(ellipse 60% 58% at 60% 44%, black 35%, transparent 95%);
+    mask-image: radial-gradient(ellipse 60% 58% at 60% 44%, black 35%, transparent 95%);
+  }
+  h1 {
+    font-size: clamp(40px, 8vw, 84px);
+    line-height: 1.04; letter-spacing: -0.025em; font-weight: 640;
+    color: var(--bright);
+  }
+  .hero-sub { margin-top: 22px; font-size: 19px; color: var(--dim); letter-spacing: -0.01em; }
+  .hero-actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .hero-note { margin-top: 22px; margin-bottom: var(--sp-lg); font-size: 14px; color: var(--dimmer); }
+
+  /* ---- window frame ---- */
+  .window {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 16px;
+    overflow: hidden; box-shadow: 0 30px 80px -20px rgba(0,0,0,.55);
+  }
+  .titlebar {
+    height: 36px; display: flex; align-items: center; padding: 0 14px;
+    background: var(--panel); border-bottom: 1px solid var(--line); position: relative;
+  }
+  .lights { display: flex; gap: 7px; }
+  .lights i {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--raised); border: 1px solid var(--line);
+  }
+  .titlebar .title {
+    position: absolute; left: 90px; right: 90px; text-align: center;
+    color: var(--dimmer); font-size: 12px; pointer-events: none;
+    font-family: var(--font-mono);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .window img { width: 100%; height: auto; display: block; }
+
+  /* ---- interactive demo ---- */
+  .demo { position: relative; cursor: pointer; border-radius: 16px; }
+  .demo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .demo-chips {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    margin-top: 20px;
+  }
+  .chip {
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--dim);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 8px 13px; cursor: pointer; transition: all .12s;
+  }
+  .chip b { color: var(--bright); font-weight: 600; margin-right: 7px; }
+  .chip:hover { border-color: var(--accent-dim); color: var(--text); }
+  .chip.active { border-color: var(--accent); color: var(--bright); background: var(--raised); }
+  .demo-note { text-align: center; margin-top: 16px; font-size: 13px; color: var(--dimmer); }
+  .demo-note .hint-key { display: inline; }
+  @media (hover: none) { .demo-note .hint-key { display: none; } }
+
+  /* ---- showcases: one line, one huge image ---- */
+  .showcase { padding: var(--sp-lg) 0; }
+  .showcase h2 {
+    font-size: clamp(30px, 4.4vw, 46px); letter-spacing: -0.025em;
+    font-weight: 640; color: var(--bright);
+  }
+  .showcase p { margin: 10px 0 34px; color: var(--dim); font-size: 17px; max-width: 52ch; }
+  .kbd {
+    font-family: var(--font-mono); font-size: 0.85em; color: var(--bright);
+    background: var(--raised); border: 1px solid var(--line); border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 7px; white-space: nowrap;
+  }
+
+  /* ---- credo ---- */
+  .credo { text-align: center; padding: var(--sp-xl) 0 var(--sp-lg); }
+  .credo h2 {
+    font-family: var(--font-mono); font-weight: 600; color: var(--bright);
+    font-size: clamp(26px, 4vw, 40px); letter-spacing: -0.02em;
+  }
+  .credo h2 .y { color: var(--dim); }
+  .credo p { margin-top: 14px; color: var(--dimmer); font-size: 15px; }
+
+  /* ---- statement ---- */
+  .statement { text-align: center; padding: var(--sp-lg) 0 0; }
+  .statement h2 {
+    font-size: clamp(30px, 4.4vw, 46px); letter-spacing: -0.025em;
+    font-weight: 640; color: var(--bright);
+  }
+
+  /* ---- install ---- */
+  .install { text-align: center; padding: var(--sp-xl) 0 var(--sp-lg); }
+  .install h2 {
+    font-size: clamp(30px, 4.4vw, 46px); letter-spacing: -0.025em;
+    font-weight: 640; color: var(--bright);
+  }
+  .install .actions { margin-top: 34px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .install .fineprint { margin-top: 26px; font-size: 13.5px; color: var(--dim); line-height: 1.9; }
+
+  /* ---- closing section, with the sea behind it ---- */
+  .closing { position: relative; overflow: hidden; }
+  .sea-backdrop {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: max(100%, 1100px); height: auto; z-index: -1;
+    pointer-events: none; user-select: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 16%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 16%);
+  }
+
+  /* ---- footer ---- */
+  footer { border-top: 1px solid var(--line); padding: 30px 0 40px; }
+  .foot-inner {
+    max-width: 1120px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    font-size: 13px; color: var(--dimmer); font-family: var(--font-mono);
+  }
+  .foot-inner .links { margin-left: auto; display: flex; gap: 18px; }
+  .foot-inner a:hover { color: var(--bright); }
+
+  /* ---- responsive ---- */
+  @media (max-width: 920px) {
+    :root { --sp-lg: 44px; --sp-xl: 72px; }
+    .nav-links { display: none; }
+    .titlebar .title { display: none; }
+    .hide-narrow { display: none; }
+    .hero-backdrop { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="#top">tterm<span class="cursor"></span></a>
+    <div class="nav-links">
+      <a href="#demo">Demo</a>
+      <a href="#rows">Rows</a>
+      <a href="#review">Review</a>
+      <a href="#browser">Browser</a>
+      <a href="shortcuts.html">Shortcuts</a>
+    </div>
+    <div class="nav-cta"><a class="pill small primary" href="#install">Get tterm ↓</a></div>
+  </div>
+</nav>
+
+<header id="top" class="wrap">
+  <img class="hero-backdrop" src="seascape.svg" width="1200" height="780" alt="" aria-hidden="true">
+  <h1>The only window<br>you need.</h1>
+  <p class="hero-sub">A terminal, a real browser, and Claude Code — under one roof.</p>
+  <div class="hero-actions">
+    <a class="pill primary" href="#install">Download for macOS ↓</a>
+    <a class="pill" href="shortcuts.html">See every shortcut →</a>
+  </div>
+  <p class="hero-note">Free — no account, no telemetry. One developer's daily driver, shared.</p>
+</header>
+
+<!-- interactive demo: real screenshots, real shortcuts -->
+<div class="wrap" id="demo">
+  <div class="demo" tabindex="0" aria-label="Interactive tterm demo. Focus and press the real keyboard shortcuts to switch views.">
+    <div class="window">
+      <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title" id="demo-title">tterm — two projects, two Claudes</span></div>
+      <img id="demo-img" src="shots/base.png" width="1600" height="1000" alt="tterm with two stacked project rows, each running its own Claude Code session next to an explorer and a file viewer.">
+    </div>
+  </div>
+  <div class="demo-chips" id="demo-chips">
+    <button class="chip active" data-state="base"><b>esc</b>workspace</button>
+    <button class="chip" data-state="palette"><b>⌘K</b>palette</button>
+    <button class="chip" data-state="projects"><b>⌘O</b>projects</button>
+    <button class="chip" data-state="quickopen"><b>⌘P</b>quick open</button>
+    <button class="chip" data-state="search"><b>⌘⇧F</b>search</button>
+    <button class="chip" data-state="find"><b>⌘F</b>find</button>
+    <button class="chip" data-state="diff"><b>⌘G</b>diff review</button>
+    <button class="chip" data-state="browser"><b>⌘B</b>browser</button>
+    <button class="chip" data-state="claudemd"><b>⌘⇧M</b>CLAUDE.md</button>
+    <button class="chip" data-state="theme">themes</button>
+  </div>
+  <p class="demo-note">Real screenshots — tterm took them of itself.<span class="hint-key"> Click the window, then use the real chords.</span></p>
+</div>
+
+<!-- rows -->
+<section id="rows" class="wrap showcase">
+  <h2>Every project is a row.</h2>
+  <p>Explorer, Claude Code, file viewer — stack as many projects as you're juggling.</p>
+  <div class="window">
+    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">tanayterm + sailboat</span></div>
+    <img src="shots/base.png" loading="lazy" width="1600" height="1000" alt="Two project rows stacked vertically, each with its own explorer, Claude Code pane, and file viewer.">
+  </div>
+</section>
+
+<!-- browser -->
+<section id="browser" class="wrap showcase">
+  <h2>A real browser lives here.</h2>
+  <p><span class="kbd">⌘B</span> — your Chrome cookies, bookmarks, and history come along.</p>
+  <div class="window">
+    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘B — a Chromium tab, favicons and all</span></div>
+    <img src="shots/browser.png" loading="lazy" width="1600" height="1000" alt="A real Chromium browser tab inside tterm with a bookmarks bar imported from Chrome.">
+  </div>
+</section>
+
+<!-- review -->
+<section id="review" class="wrap showcase">
+  <h2>Review, don't retype.</h2>
+  <p>No editor, on purpose. <span class="kbd">⌘G</span> — stage what's right, hunk by hunk, and commit.</p>
+  <div class="window">
+    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘G — diff review</span></div>
+    <img src="shots/diff.png" loading="lazy" width="1600" height="1000" alt="Diff review mode showing a side-by-side diff with stage hunk, unstage, and discard controls.">
+  </div>
+</section>
+
+<!-- self-hosting -->
+<section id="self" class="wrap showcase">
+  <h2>Change it from the inside.</h2>
+  <p><span class="kbd">⌘K</span> → <em>Claude on tterm itself</em> — ask for a feature and the running app hot-reloads with it. Most of tterm was built this way.</p>
+  <div class="window">
+    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘⇧M — tterm reading its own CLAUDE.md</span></div>
+    <img src="shots/claudemd.png" loading="lazy" width="1600" height="1000" alt="tterm displaying its own CLAUDE.md project notes in the file viewer.">
+  </div>
+</section>
+
+<div class="closing">
+<img class="sea-backdrop" src="closing.svg" width="1600" height="1200" alt="" aria-hidden="true">
+<!-- credo -->
+<div class="credo wrap">
+  <h2><span class="y">⌃ is yours.</span> ⌘ is tterm's.</h2>
+  <p>Only ⌘-chords are ever intercepted — every ctrl key reaches the pty untouched.</p>
+</div>
+
+<div class="statement wrap">
+  <h2>Built in the evenings.<br>Used every day.</h2>
+</div>
+
+<!-- install -->
+<section class="install wrap" id="install">
+  <h2>Free, for hobbyists.</h2>
+  <div class="actions">
+    <a class="pill primary" href="https://github.com/tgondil/tterm-site/releases/latest/download/tterm.zip">Download tterm for macOS ↓</a>
+    <a class="pill" href="shortcuts.html">Learn the chords →</a>
+  </div>
+  <p class="fineprint">
+    macOS · ad-hoc signed, so Gatekeeper balks once — allow it under System Settings → Privacy &amp; Security.<br class="hide-narrow">
+    No account, no telemetry, nothing phoning home.
+  </p>
+</section>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>tterm — © 2026 Tanay Gondil</span>
+    <span class="hide-narrow">made inside tterm, with tterm</span>
+    <div class="links">
+      <a href="shortcuts.html">Shortcuts</a>
+      <a href="#demo">Demo</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const STATES = {
+    base:     'tterm — two projects, two Claudes',
+    palette:  '⌘K — every action, fuzzy-searched',
+    projects: '⌘O — open, stack, or clone a repo',
+    quickopen:'⌘P — quick-open any file',
+    search:   '⌘⇧F — search across the project',
+    find:     '⌘F — find in terminal, browser, or file',
+    diff:     '⌘G — diff review, stage hunk by hunk',
+    browser:  '⌘B — a real Chromium tab',
+    claudemd: '⌘⇧M — the project’s CLAUDE.md',
+    theme:    'themes — pick a look from the palette',
+  };
+  const img = document.getElementById('demo-img');
+  const title = document.getElementById('demo-title');
+  const chips = document.getElementById('demo-chips');
+  const demo = document.querySelector('.demo');
+
+  // preload the other states on first intent, not at page load
+  let preloaded = false;
+  function preload() {
+    if (preloaded) return;
+    preloaded = true;
+    Object.keys(STATES).forEach((s) => { const i = new Image(); i.src = 'shots/' + s + '.png'; });
+  }
+  demo.addEventListener('pointerover', preload, { once: true });
+  demo.addEventListener('focus', preload, { once: true });
+  chips.addEventListener('pointerover', preload, { once: true });
+
+  function show(state) {
+    if (!STATES[state]) return;
+    img.src = 'shots/' + state + '.png';
+    img.alt = 'tterm — ' + STATES[state];
+    title.textContent = STATES[state];
+    for (const c of chips.children) c.classList.toggle('active', c.dataset.state === state);
+  }
+
+  chips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    show(chip.dataset.state);
+    demo.focus();
+  });
+  demo.addEventListener('click', () => demo.focus());
+
+  demo.addEventListener('keydown', (e) => {
+    const k = e.key.toLowerCase();
+    let state = null;
+    if (e.key === 'Escape') state = 'base';
+    else if (e.metaKey && e.shiftKey && k === 'f') state = 'search';
+    else if (e.metaKey && e.shiftKey && k === 'm') state = 'claudemd';
+    else if (e.metaKey && !e.shiftKey && k === 'k') state = 'palette';
+    else if (e.metaKey && !e.shiftKey && k === 'o') state = 'projects';
+    else if (e.metaKey && !e.shiftKey && k === 'p') state = 'quickopen';
+    else if (e.metaKey && !e.shiftKey && k === 'f') state = 'find';
+    else if (e.metaKey && !e.shiftKey && k === 'g') state = 'diff';
+    else if (e.metaKey && !e.shiftKey && k === 'b') state = 'browser';
+    if (state) {
+      e.preventDefault();
+      show(state);
+    }
+  });
+})();
+</script>
+</body>
+</html>

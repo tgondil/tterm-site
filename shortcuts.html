@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tterm shortcuts — every chord</title>
+<meta name="description" content="Every keyboard shortcut in tterm, with real screenshots. Cmd-only by design — ctrl belongs to the terminal.">
+<link rel="canonical" href="https://tterm.sh/shortcuts.html">
+<meta property="og:url" content="https://tterm.sh/shortcuts.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0e12'/%3E%3Crect x='8' y='8' width='5' height='16' fill='%237aa2f7'/%3E%3Cpath d='M17 21h8v3h-8z' fill='%23565f89'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0c0e12; --panel: #12151c; --raised: #1a1e28; --line: #1e2431;
+    --text: #c8ccd4; --bright: #e8ecf4; --dim: #7c86a3; --dimmer: #565f89;
+    --accent: #7aa2f7; --accent-dim: #2e3c64;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-ui); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  [id] { scroll-margin-top: 80px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(30, 36, 49, 0.6);
+  }
+  .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 58px; display: flex; align-items: center; gap: 28px; }
+  .wordmark { font-family: var(--font-mono); font-size: 17px; font-weight: 600; color: var(--bright); display: flex; align-items: center; }
+  .wordmark .cursor { display: inline-block; width: 8px; height: 17px; margin-left: 3px; background: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) { .wordmark .cursor { animation: blink 1.2s steps(1) infinite; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  .nav-links { display: flex; gap: 24px; margin-left: 16px; font-size: 14px; color: var(--dim); }
+  .nav-links a:hover { color: var(--bright); }
+  .nav-cta { margin-left: auto; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--bright); background: var(--bright); color: #0b0d11;
+  }
+  .pill:hover { background: #fff; color: #000; }
+
+  header { padding: 96px 0 24px; }
+  h1 { font-size: clamp(34px, 5vw, 54px); letter-spacing: -0.025em; font-weight: 640; color: var(--bright); }
+  .lede { margin-top: 16px; color: var(--dim); max-width: 620px; font-size: 17px; }
+  .lede .kbd-note { color: var(--dimmer); font-size: 14px; display: block; margin-top: 10px; }
+
+  /* gallery */
+  .gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 28px 0 8px; }
+  .shot {
+    border: 1px solid var(--line); border-radius: 9px; overflow: hidden; cursor: zoom-in;
+    background: var(--panel); transition: border-color .15s; position: relative;
+  }
+  .shot:hover { border-color: var(--accent-dim); }
+  .shot img { width: 100%; height: auto; display: block; }
+  .shot span {
+    position: absolute; left: 0; right: 0; bottom: 0; font-family: var(--font-mono);
+    font-size: 12px; color: var(--text); background: rgba(12,14,18,.78); padding: 3px 8px;
+  }
+
+  section { padding: 26px 0; }
+  h2 { font-size: 20px; font-weight: 600; color: var(--bright); letter-spacing: -0.01em; padding-bottom: 4px; }
+  .group-note { color: var(--dimmer); font-size: 14px; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; }
+  tr { border-top: 1px solid var(--line); }
+  tr:first-child { border-top: none; }
+  td { padding: 11px 8px; vertical-align: top; }
+  td.keys { width: 150px; white-space: nowrap; }
+  kbd {
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--bright);
+    background: var(--raised); border: 1px solid var(--line); border-bottom-width: 2px;
+    border-radius: 5px; padding: 2px 7px; margin-right: 2px; display: inline-block;
+  }
+  td.keys .palette-only { color: var(--dimmer); font-size: 12.5px; font-family: var(--font-mono); }
+  td.what { color: var(--text); font-size: 14.5px; }
+  td.what small { color: var(--dim); display: block; font-size: 13.5px; margin-top: 1px; }
+  td.cam { width: 34px; text-align: right; }
+  .cam button {
+    background: none; border: 1px solid var(--line); color: var(--dim); border-radius: 6px;
+    font-size: 12px; padding: 8px 10px; cursor: zoom-in; font-family: var(--font-mono);
+  }
+  .cam button:hover { color: var(--bright); border-color: var(--accent-dim); }
+
+  dialog {
+    border: 1px solid var(--line); border-radius: 12px; padding: 0; background: var(--bg);
+    max-width: min(1200px, 92vw); box-shadow: 0 40px 120px rgba(0,0,0,.7);
+  }
+  dialog::backdrop { background: rgba(6, 7, 10, 0.82); }
+  dialog img { width: 100%; max-height: 84vh; object-fit: contain; display: block; border-radius: 12px; }
+  dialog .cap {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--bright);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px;
+  }
+  #lightbox-close {
+    position: fixed; top: 14px; right: 14px; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--panel); border: 1px solid var(--line); color: var(--bright);
+    font-size: 18px; cursor: pointer;
+  }
+  #lightbox-close:hover { border-color: var(--accent-dim); }
+
+  footer { border-top: 1px solid var(--line); padding: 30px 0 40px; margin-top: 60px; }
+  .foot-inner { max-width: 980px; margin: 0 auto; padding: 0 24px; display: flex; gap: 20px; font-size: 13px; color: var(--dimmer); font-family: var(--font-mono); }
+  .foot-inner a { margin-left: auto; }
+  .foot-inner a:hover { color: var(--bright); }
+
+  @media (max-width: 920px) {
+    .nav-links { display: none; }
+    header { padding: 64px 0 20px; }
+  }
+  @media (max-width: 760px) {
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    td.keys { width: auto; }
+  }
+  @media (max-width: 520px) {
+    td.keys { white-space: normal; }
+    td.what small { overflow-wrap: anywhere; }
+    td { padding: 10px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html">tterm<span class="cursor"></span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#demo">Demo</a>
+    </div>
+    <div class="nav-cta"><a class="pill" href="index.html#install">Get tterm ↓</a></div>
+  </div>
+</nav>
+
+<header class="wrap">
+  <h1>Every chord.</h1>
+  <p class="lede">
+    tterm is keyboard-first, but with one hard rule: <b style="color:var(--bright)">only ⌘-chords are ever intercepted.</b>
+    ctrl, escape, and every plain key belong to the terminal — your TUIs, your shell, your Claude sessions see them untouched.
+    <span class="kbd-note">Everything below lives in one hot-reloaded <code>keybindings.json</code>; unbound actions are a <kbd>⌘K</kbd> away. Rows marked <span style="font-family:var(--font-mono)">view</span> open a screenshot.</span>
+  </p>
+</header>
+
+<div class="wrap">
+  <div class="gallery" id="gallery">
+    <div class="shot" data-shot="base"><img src="shots/base.png" loading="lazy" alt="Workspace with two project rows"><span>workspace</span></div>
+    <div class="shot" data-shot="palette"><img src="shots/palette.png" loading="lazy" alt="Command palette"><span>⌘K palette</span></div>
+    <div class="shot" data-shot="projects"><img src="shots/projects.png" loading="lazy" alt="Project switcher"><span>⌘O projects</span></div>
+    <div class="shot" data-shot="quickopen"><img src="shots/quickopen.png" loading="lazy" alt="Quick open"><span>⌘P quick open</span></div>
+    <div class="shot" data-shot="search"><img src="shots/search.png" loading="lazy" alt="Search in files"><span>⌘⇧F search</span></div>
+    <div class="shot" data-shot="find"><img src="shots/find.png" loading="lazy" alt="Find in pane"><span>⌘F find</span></div>
+    <div class="shot" data-shot="diff"><img src="shots/diff.png" loading="lazy" alt="Diff review"><span>⌘G diff</span></div>
+    <div class="shot" data-shot="browser"><img src="shots/browser.png" loading="lazy" alt="Browser tab"><span>⌘B browser</span></div>
+    <div class="shot" data-shot="claudemd"><img src="shots/claudemd.png" loading="lazy" alt="CLAUDE.md viewer"><span>⌘⇧M CLAUDE.md</span></div>
+    <div class="shot" data-shot="theme"><img src="shots/theme.png" loading="lazy" alt="Theme picker"><span>themes</span></div>
+  </div>
+</div>
+
+<section class="wrap" id="tabs">
+  <h2>Tabs</h2>
+  <p class="group-note">A tab is a project — or a browser page.</p>
+  <table>
+    <tr><td class="keys"><kbd>⌘T</kbd></td><td class="what">New tab <small>opens a shell in the current project</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧W</kbd></td><td class="what">Close tab</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧T</kbd></td><td class="what">Reopen closed tab <small>panes respawn, layout intact</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘1</kbd>…<kbd>⌘9</kbd></td><td class="what">Jump to tab 1–9</td><td class="cam"></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="panes">
+  <h2>Panes</h2>
+  <p class="group-note">Real PTYs in a recursive split tree — rendered flat, so it stays fast.</p>
+  <table>
+    <tr><td class="keys"><kbd>⌘D</kbd> / <kbd>⌘⇧D</kbd></td><td class="what">Split right / split down</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧C</kbd></td><td class="what">New Claude Code pane <small>launches claude --dangerously-skip-permissions</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘W</kbd></td><td class="what">Close pane</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧⏎</kbd></td><td class="what">Zoom pane <small>one pane fills the window; press again to restore</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⌥←→↑↓</kbd></td><td class="what">Move focus between panes</td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Restart pane <small>respawn a dead or wedged pty in place</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Clear terminal</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘=</kbd> / <kbd>⌘−</kbd> / <kbd>⌘0</kbd></td><td class="what">Zoom in / out / reset <small>terminal font or browser page — whichever is focused</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Save / load a pane layout</td><td class="cam"></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="projects">
+  <h2>Projects &amp; navigation</h2>
+  <p class="group-note">tterm launches straight into the project picker — pick a repo, get a row: explorer, Claude, viewer.</p>
+  <table>
+    <tr><td class="keys"><kbd>⌘K</kbd></td><td class="what">Command palette <small>every action, fuzzy-searched, frecency-sorted</small></td><td class="cam"><button data-shot="palette">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘O</kbd></td><td class="what">Open project <small>⏎ stacks it as a row · ⌘⏎ opens a tab · clone a repo from the top of the list</small></td><td class="cam"><button data-shot="projects">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘P</kbd></td><td class="what">Quick-open a file <small>⇥ widens scope to every open project</small></td><td class="cam"><button data-shot="quickopen">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧F</kbd></td><td class="what">Search in files <small>git grep, includes untracked</small></td><td class="cam"><button data-shot="search">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘E</kbd></td><td class="what">Toggle file tree</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘F</kbd></td><td class="what">Find <small>in the focused terminal, browser page, or file</small></td><td class="cam"><button data-shot="find">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧M</kbd></td><td class="what">Open the project's CLAUDE.md</td><td class="cam"><button data-shot="claudemd">view</button></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Select theme · open keybindings.json</td><td class="cam"><button data-shot="theme">view</button></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="review">
+  <h2>Review &amp; git</h2>
+  <p class="group-note">The whole point: read what Claude wrote, keep what's right.</p>
+  <table>
+    <tr><td class="keys"><kbd>⌘G</kbd></td><td class="what">Diff review <small>side-by-side or unified · j/k hunks · stage, unstage, discard by hunk or file · commit from the bar</small></td><td class="cam"><button data-shot="diff">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧I</kbd></td><td class="what">Switch git branch</td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Stash changes · pop latest stash</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧O</kbd></td><td class="what">Reveal project in Finder</td><td class="cam"></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="browser">
+  <h2>Browser</h2>
+  <p class="group-note">Real Chromium views — your cookies, bookmarks, and history ride along.</p>
+  <table>
+    <tr><td class="keys"><kbd>⌘B</kbd></td><td class="what">New browser tab <small>URL bar focused, history + Google suggest as you type</small></td><td class="cam"><button data-shot="browser">view</button></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧B</kbd></td><td class="what">Reopen localhost:PORT <small>ports are sniffed from terminal output</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘L</kbd></td><td class="what">Focus URL bar</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘R</kbd></td><td class="what">Reload page</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘[</kbd> / <kbd>⌘]</kbd></td><td class="what">Back / forward</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧A</kbd></td><td class="what">New claude.ai tab</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧G</kbd></td><td class="what">New chatgpt.com tab</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧K</kbd></td><td class="what">Cowork <small>fullscreen the Claude desktop app; press again to come back — works from anywhere</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Import Chrome cookies <small>logins come across; also runs on launch</small></td><td class="cam"></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="tterm">
+  <h2>tterm on tterm</h2>
+  <p class="group-note">The app is its own workshop.</p>
+  <table>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Claude on tterm itself <small>opens a Claude Code pane on tterm's source</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Rebuild &amp; install tterm.app <small>then relaunch — self-update in two actions</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧R</kbd></td><td class="what">Hot-reload the renderer <small>with dev-mount, edits to source reload live</small></td><td class="cam"></td></tr>
+  </table>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <span>tterm — © 2026 Tanay Gondil</span>
+    <a href="index.html">← back to tterm</a>
+  </div>
+</footer>
+
+<dialog id="lightbox">
+  <img id="lightbox-img" src="shots/base.png" alt="tterm screenshot">
+  <div class="cap" id="lightbox-cap"></div>
+  <button id="lightbox-close" aria-label="Close">✕</button>
+</dialog>
+
+<script>
+(() => {
+  const CAPS = {
+    base: 'the workspace — two projects, two Claudes',
+    palette: '⌘K — command palette', projects: '⌘O — open, stack, or clone',
+    quickopen: '⌘P — quick open', search: '⌘⇧F — search in files',
+    find: '⌘F — find in pane', diff: '⌘G — diff review',
+    browser: '⌘B — browser tab', claudemd: '⌘⇧M — CLAUDE.md', theme: 'theme picker',
+  };
+  const dlg = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  const cap = document.getElementById('lightbox-cap');
+  function open(shot) {
+    img.src = 'shots/' + shot + '.png';
+    img.alt = 'tterm — ' + (CAPS[shot] || shot);
+    cap.textContent = CAPS[shot] || shot;
+    dlg.showModal();
+  }
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-shot]');
+    if (t) { open(t.dataset.shot); return; }
+  });
+  dlg.addEventListener('click', () => dlg.close());
+})();
+</script>
+</body>
+</html>
