@@ -179,6 +179,14 @@
 
   /* ---- closing section, with the sea behind it ---- */
   .closing { position: relative; overflow: hidden; }
+  /* the art is bottom-anchored and often taller than the section — its
+     cropped top edge hides under this fade, so the night always eases in */
+  .closing::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 170px;
+    background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .closing > .wrap { position: relative; }
   .sea-backdrop {
     position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
     width: max(100%, 1100px); height: auto; z-index: -1;
@@ -298,7 +306,7 @@
 </section>
 
 <div class="closing">
-<img class="sea-backdrop" src="closing.svg" width="1600" height="1200" alt="" aria-hidden="true">
+<img class="sea-backdrop" src="closing.svg" width="1600" height="950" alt="" aria-hidden="true">
 <!-- credo -->
 <div class="credo wrap">
   <h2><span class="y">⌃ is yours.</span> ⌘ is tterm's.</h2>
