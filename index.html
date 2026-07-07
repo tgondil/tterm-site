@@ -80,7 +80,8 @@
   .pill.small { padding: 7px 14px; font-size: 13px; }
 
   /* ---- hero ---- */
-  header { padding: var(--sp-xl) 0 var(--sp-lg); position: relative; }
+  /* header.wrap: must out-rank .wrap's padding (class beats element selector) */
+  header.wrap { padding: 48px 24px var(--sp-lg); position: relative; }
   .hero-backdrop {
     position: absolute; top: -36px; right: -48px;
     width: min(900px, 70%); height: auto; opacity: 0.55;
