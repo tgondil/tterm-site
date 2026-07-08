@@ -7,6 +7,9 @@
 <meta name="description" content="Every keyboard shortcut in tterm, with real screenshots. Cmd-only by design — ctrl belongs to the terminal.">
 <link rel="canonical" href="https://tterm.sh/shortcuts.html">
 <meta property="og:url" content="https://tterm.sh/shortcuts.html">
+<meta property="og:image" content="https://tterm.sh/shots/palette.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0e12'/%3E%3Crect x='8' y='8' width='5' height='16' fill='%237aa2f7'/%3E%3Cpath d='M17 21h8v3h-8z' fill='%23565f89'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -17,7 +20,7 @@
     --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   body { background: var(--bg); color: var(--text); font-family: var(--font-ui); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
   .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
@@ -25,6 +28,7 @@
 
   nav {
     position: sticky; top: 0; z-index: 10;
+    background: rgba(12, 14, 18, 0.85);
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(30, 36, 49, 0.6);
@@ -54,7 +58,10 @@
   .shot {
     border: 1px solid var(--line); border-radius: 9px; overflow: hidden; cursor: zoom-in;
     background: var(--panel); transition: border-color .15s; position: relative;
+    display: block; width: 100%; padding: 0; font: inherit; color: inherit;
+    -webkit-appearance: none; appearance: none;
   }
+  .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .shot:hover { border-color: var(--accent-dim); }
   .shot img { width: 100%; height: auto; display: block; }
   .shot span {
@@ -90,7 +97,7 @@
     max-width: min(1200px, 92vw); box-shadow: 0 40px 120px rgba(0,0,0,.7);
   }
   dialog::backdrop { background: rgba(6, 7, 10, 0.82); }
-  dialog img { width: 100%; max-height: 84vh; object-fit: contain; display: block; border-radius: 12px; }
+  dialog img { width: 100%; max-height: 84vh; max-height: 84dvh; object-fit: contain; display: block; border-radius: 12px; }
   dialog .cap {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px;
     font-family: var(--font-mono); font-size: 12px; color: var(--bright);
@@ -121,6 +128,15 @@
     td.what small { overflow-wrap: anywhere; }
     td { padding: 10px 6px; }
   }
+  @media print {
+    nav, .gallery, footer, dialog, .cam { display: none !important; }
+    body { background: #fff; color: #111; }
+    h1, h2, td.what { color: #000; }
+    .lede, .group-note, td.what small { color: #444; }
+    .lede b { color: #000; }
+    kbd, td.keys .palette-only { color: #000; background: #eee; border-color: #bbb; }
+    tr { border-color: #ccc; }
+  }
 </style>
 </head>
 <body>
@@ -147,16 +163,16 @@
 
 <div class="wrap">
   <div class="gallery" id="gallery">
-    <div class="shot" data-shot="base"><img src="shots/base.png" loading="lazy" alt="Workspace with two project rows"><span>workspace</span></div>
-    <div class="shot" data-shot="palette"><img src="shots/palette.png" loading="lazy" alt="Command palette"><span>⌘K palette</span></div>
-    <div class="shot" data-shot="projects"><img src="shots/projects.png" loading="lazy" alt="Project switcher"><span>⌘O projects</span></div>
-    <div class="shot" data-shot="quickopen"><img src="shots/quickopen.png" loading="lazy" alt="Quick open"><span>⌘P quick open</span></div>
-    <div class="shot" data-shot="search"><img src="shots/search.png" loading="lazy" alt="Search in files"><span>⌘⇧F search</span></div>
-    <div class="shot" data-shot="find"><img src="shots/find.png" loading="lazy" alt="Find in pane"><span>⌘F find</span></div>
-    <div class="shot" data-shot="diff"><img src="shots/diff.png" loading="lazy" alt="Diff review"><span>⌘G diff</span></div>
-    <div class="shot" data-shot="browser"><img src="shots/browser.png" loading="lazy" alt="Browser tab"><span>⌘B browser</span></div>
-    <div class="shot" data-shot="claudemd"><img src="shots/claudemd.png" loading="lazy" alt="CLAUDE.md viewer"><span>⌘⇧M CLAUDE.md</span></div>
-    <div class="shot" data-shot="theme"><img src="shots/theme.png" loading="lazy" alt="Theme picker"><span>themes</span></div>
+    <button type="button" class="shot" data-shot="base" aria-label="View screenshot: Workspace with two project rows"><img src="shots/base.png" loading="lazy" alt="Workspace with two project rows"><span>workspace</span></button>
+    <button type="button" class="shot" data-shot="palette" aria-label="View screenshot: Command palette"><img src="shots/palette.png" loading="lazy" alt="Command palette"><span>⌘K palette</span></button>
+    <button type="button" class="shot" data-shot="projects" aria-label="View screenshot: Project switcher"><img src="shots/projects.png" loading="lazy" alt="Project switcher"><span>⌘O projects</span></button>
+    <button type="button" class="shot" data-shot="quickopen" aria-label="View screenshot: Quick open"><img src="shots/quickopen.png" loading="lazy" alt="Quick open"><span>⌘P quick open</span></button>
+    <button type="button" class="shot" data-shot="search" aria-label="View screenshot: Search in files"><img src="shots/search.png" loading="lazy" alt="Search in files"><span>⌘⇧F search</span></button>
+    <button type="button" class="shot" data-shot="find" aria-label="View screenshot: Find in pane"><img src="shots/find.png" loading="lazy" alt="Find in pane"><span>⌘F find</span></button>
+    <button type="button" class="shot" data-shot="diff" aria-label="View screenshot: Diff review"><img src="shots/diff.png" loading="lazy" alt="Diff review"><span>⌘G diff</span></button>
+    <button type="button" class="shot" data-shot="browser" aria-label="View screenshot: Browser tab"><img src="shots/browser.png" loading="lazy" alt="Browser tab"><span>⌘B browser</span></button>
+    <button type="button" class="shot" data-shot="claudemd" aria-label="View screenshot: CLAUDE.md viewer"><img src="shots/claudemd.png" loading="lazy" alt="CLAUDE.md viewer"><span>⌘⇧M CLAUDE.md</span></button>
+    <button type="button" class="shot" data-shot="theme" aria-label="View screenshot: Theme picker"><img src="shots/theme.png" loading="lazy" alt="Theme picker"><span>themes</span></button>
   </div>
 </div>
 
@@ -265,11 +281,18 @@
   const img = document.getElementById('lightbox-img');
   const cap = document.getElementById('lightbox-cap');
   function open(shot) {
+    if (typeof dlg.showModal !== 'function') {
+      window.open('shots/' + shot + '.png', '_blank'); // pre-<dialog> browsers
+      return;
+    }
     img.src = 'shots/' + shot + '.png';
     img.alt = 'tterm — ' + (CAPS[shot] || shot);
     cap.textContent = CAPS[shot] || shot;
-    dlg.showModal();
+    if (!dlg.open) dlg.showModal();
+    document.body.style.overflow = 'hidden';
   }
+  dlg.addEventListener('close', () => { document.body.style.overflow = ''; });
+  img.addEventListener('error', () => { if (dlg.open) dlg.close(); });
   document.addEventListener('click', (e) => {
     const t = e.target.closest('[data-shot]');
     if (t) { open(t.dataset.shot); return; }

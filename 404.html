@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — tterm</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0e12'/%3E%3Crect x='8' y='8' width='5' height='16' fill='%237aa2f7'/%3E%3Cpath d='M17 21h8v3h-8z' fill='%23565f89'/%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0c0e12; color: #c8ccd4; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'SF Mono', ui-monospace, Menlo, Monaco, monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { text-align: center; padding: 24px; }
+  h1 { font-size: 17px; font-weight: 600; color: #e8ecf4; }
+  h1 .cursor {
+    display: inline-block; width: 8px; height: 17px; margin-left: 3px;
+    vertical-align: -2px; background: #7aa2f7;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    h1 .cursor { animation: blink 1.2s steps(1) infinite; }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  p { margin-top: 12px; font-size: 13px; color: #565f89; }
+  a { color: #7aa2f7; text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>zsh: no such file or directory: 404<span class="cursor"></span></h1>
+  <p><a href="/">cd ~</a></p>
+</main>
+</body>
+</html>

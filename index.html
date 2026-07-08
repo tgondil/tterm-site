@@ -9,6 +9,10 @@
 <meta property="og:description" content="A terminal, a real browser, and Claude Code under one roof. It edits itself and hot-reloads. Free, for hobbyists.">
 <link rel="canonical" href="https://tterm.sh/">
 <meta property="og:url" content="https://tterm.sh/">
+<meta property="og:image" content="https://tterm.sh/shots/base.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tterm.sh/shots/base.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0e12'/%3E%3Crect x='8' y='8' width='5' height='16' fill='%237aa2f7'/%3E%3Cpath d='M17 21h8v3h-8z' fill='%23565f89'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -28,7 +32,7 @@
     --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   body {
     background: var(--bg);
     color: var(--text);
@@ -44,6 +48,7 @@
   /* ---- nav ---- */
   nav {
     position: sticky; top: 0; z-index: 10;
+    background: rgba(12, 14, 18, 0.85);
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -137,7 +142,16 @@
   .chip.active { border-color: var(--accent); color: var(--bright); background: var(--raised); }
   .demo-note { text-align: center; margin-top: 16px; font-size: 13px; color: var(--dimmer); }
   .demo-note .hint-key { display: inline; }
-  @media (hover: none) { .demo-note .hint-key { display: none; } }
+  @media (hover: none) {
+    .demo-note .hint-key { display: none; }
+    .chip { padding: 11px 15px; }
+  }
+  @media (forced-colors: active) {
+    .chip.active { outline: 2px solid ButtonText; }
+  }
+  @media (max-width: 640px) {
+    .sea-backdrop { display: none; }
+  }
 
   /* ---- showcases: one line, one huge image ---- */
   .showcase { padding: var(--sp-lg) 0; }
@@ -244,13 +258,13 @@
 
 <!-- interactive demo: real screenshots, real shortcuts -->
 <div class="wrap" id="demo">
-  <div class="demo" tabindex="0" aria-label="Interactive tterm demo. Focus and press the real keyboard shortcuts to switch views.">
+  <div class="demo" tabindex="0" role="region" aria-label="Interactive tterm demo. Focus and press the real keyboard shortcuts to switch views.">
     <div class="window">
       <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title" id="demo-title">tterm — two projects, two Claudes</span></div>
       <img id="demo-img" src="shots/base.png" width="1600" height="1000" alt="tterm with two stacked project rows, each running its own Claude Code session next to an explorer and a file viewer.">
     </div>
   </div>
-  <div class="demo-chips" id="demo-chips">
+  <div class="demo-chips" id="demo-chips" role="group" aria-label="Demo states">
     <button class="chip active" data-state="base"><b>esc</b>workspace</button>
     <button class="chip" data-state="palette"><b>⌘K</b>palette</button>
     <button class="chip" data-state="projects"><b>⌘O</b>projects</button>
@@ -262,7 +276,7 @@
     <button class="chip" data-state="claudemd"><b>⌘⇧M</b>CLAUDE.md</button>
     <button class="chip" data-state="theme">themes</button>
   </div>
-  <p class="demo-note">Real screenshots — tterm took them of itself.<span class="hint-key"> The real chords work right here: ⌘K, ⌘G, ⌘B… or arrow through. esc resets.</span></p>
+  <p class="demo-note">Real screenshots — tterm took them of itself.<span class="hint-key"> The real chords work right here: ⌘K, ⌘G, ⌘B… click the window for the rest.</span></p>
 </div>
 
 <!-- self-hosting -->
@@ -364,11 +378,10 @@
   let current = 'base';
   let interacted = false;
 
-  title.setAttribute('aria-live', 'polite');
-
   // ---- preload: all states, off the critical path ----
   const loaded = new Set(['base']);
   function preloadAll() {
+    if (navigator.connection && navigator.connection.saveData) return;
     ORDER.forEach((st) => {
       if (loaded.has(st)) return;
       const i = new Image();
@@ -388,10 +401,15 @@
     img.src = 'shots/' + state + '.png';
     img.alt = 'tterm — ' + STATES[state];
     title.textContent = STATES[state];
-    for (const c of chips.children) c.classList.toggle('active', c.dataset.state === state);
+    for (const c of chips.children) {
+      const on = c.dataset.state === state;
+      c.classList.toggle('active', on);
+      c.setAttribute('aria-pressed', String(on));
+    }
   }
   // a broken screenshot never leaves a dead demo
   img.addEventListener('error', () => {
+    if (img.naturalWidth > 0) return; // stale error from a superseded request
     if (!img.src.endsWith('/base.png')) { current = ''; show('base'); }
   });
 
@@ -401,7 +419,13 @@
   }
 
   // ---- interactions ----
-  function markInteracted() { interacted = true; stopAttract(); }
+  function markInteracted() {
+    interacted = true;
+    stopAttract();
+    // announce state changes only once they're user-driven — the attract
+    // tour must never talk over a screen reader
+    title.setAttribute('aria-live', 'polite');
+  }
 
   chips.addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
@@ -410,6 +434,7 @@
     show(chip.dataset.state);
   });
   demo.addEventListener('pointerdown', markInteracted);
+  demo.addEventListener('focusin', stopAttract);
 
   // the real chords work whenever the demo is mostly on screen — no click
   // needed; checked synchronously so it can never go stale mid-scroll
@@ -420,21 +445,32 @@
   }
 
   document.addEventListener('keydown', (e) => {
-    if (!demoVisible() && !demo.contains(document.activeElement)) return;
-    const k = e.key.toLowerCase();
+    const r = demo.getBoundingClientRect();
+    const onScreen = r.bottom > 0 && r.top < innerHeight;
+    const focused = onScreen && demo.contains(document.activeElement);
+    if (!focused && !demoVisible()) return;
+
+    // physical key codes, so the chords survive non-Latin keyboard layouts
+    const k = /^Key[A-Z]$/.test(e.code) ? e.code.slice(3).toLowerCase() : e.key.toLowerCase();
+    const mod = e.metaKey || e.ctrlKey; // ⌘ on a mac, Ctrl everywhere else
+    const noMods = !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     let state = null;
-    if (e.key === 'Escape') state = 'base';
-    else if (e.key === 'ArrowRight') { markInteracted(); e.preventDefault(); step(1); return; }
-    else if (e.key === 'ArrowLeft') { markInteracted(); e.preventDefault(); step(-1); return; }
-    else if (e.metaKey && e.shiftKey && k === 'f') state = 'search';
-    else if (e.metaKey && e.shiftKey && k === 'm') state = 'claudemd';
-    else if (e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey) {
+
+    // passive keys (arrows, esc) stay the browser's unless the visitor clicked in
+    if (e.key === 'Escape') { if (focused && current !== 'base') state = 'base'; }
+    else if (e.key === 'ArrowRight' && noMods) { if (focused) { markInteracted(); e.preventDefault(); step(1); } return; }
+    else if (e.key === 'ArrowLeft' && noMods) { if (focused) { markInteracted(); e.preventDefault(); step(-1); } return; }
+    else if (mod && e.shiftKey && !e.altKey && k === 'f') state = 'search';
+    else if (mod && e.shiftKey && !e.altKey && k === 'm') state = 'claudemd';
+    else if (mod && !e.shiftKey && !e.altKey) {
+      // low-conflict chords work on sight; the browser's own essentials
+      // (find / print / open) need an explicit click into the demo
       if (k === 'k') state = 'palette';
-      else if (k === 'o') state = 'projects';
-      else if (k === 'p') state = 'quickopen';
-      else if (k === 'f') state = 'find';
       else if (k === 'g') state = 'diff';
       else if (k === 'b') state = 'browser';
+      else if (focused && k === 'f') state = 'find';
+      else if (focused && k === 'p') state = 'quickopen';
+      else if (focused && k === 'o') state = 'projects';
     }
     if (state) {
       markInteracted();
@@ -454,7 +490,7 @@
     if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
     let i = 0;
     attractTimer = setInterval(() => {
-      if (!demoVisible() || interacted) return;
+      if (document.hidden || !demoVisible() || interacted) return;
       i = (i + 1) % TOUR.length;
       if (loaded.has(TOUR[i]) || TOUR[i] === 'base') show(TOUR[i]);
     }, 3600);
@@ -462,6 +498,11 @@
   demo.addEventListener('pointerenter', stopAttract);
   demo.addEventListener('pointerleave', () => { if (!interacted) maybeStartAttract(); });
   setTimeout(maybeStartAttract, 4500);
+
+  // Windows/Linux: the OS eats most Super-key chords, so advertise Ctrl
+  const isMac = /Mac|iP(hone|ad|od)/.test(navigator.platform || '');
+  const hint = document.querySelector('.demo-note .hint-key');
+  if (hint && !isMac) hint.textContent = ' Ctrl+K, Ctrl+G, Ctrl+B work right here — click the window for the rest.';
 })();
 </script>
 <script data-goatcounter="https://tanay.goatcounter.com/count"
