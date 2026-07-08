@@ -149,9 +149,6 @@
   @media (forced-colors: active) {
     .chip.active { outline: 2px solid ButtonText; }
   }
-  @media (max-width: 640px) {
-    .sea-backdrop { display: none; }
-  }
 
   /* ---- showcases: one line, one huge image ---- */
   .showcase { padding-block: var(--sp-lg); }
@@ -208,6 +205,10 @@
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 16%);
     mask-image: linear-gradient(to bottom, transparent 0%, black 16%);
   }
+  @media (max-width: 640px) {
+    /* phones: anchor right so the moon, its reflection, and the water stay in frame */
+    .sea-backdrop { left: auto; right: -36px; transform: none; }
+  }
 
   /* ---- footer ---- */
   footer { border-top: 1px solid var(--line); padding: 30px 0 40px; }
@@ -225,7 +226,11 @@
     .nav-links { display: none; }
     .titlebar .title { display: none; }
     .hide-narrow { display: none; }
-    .hero-backdrop { display: none; }
+    .hero-backdrop {
+      width: 420px; top: -12px; right: -64px; opacity: 0.45;
+      -webkit-mask-image: radial-gradient(ellipse 55% 55% at 62% 40%, black 35%, transparent 92%);
+      mask-image: radial-gradient(ellipse 55% 55% at 62% 40%, black 35%, transparent 92%);
+    }
   }
 </style>
 </head>
