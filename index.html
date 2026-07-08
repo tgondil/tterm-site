@@ -262,7 +262,7 @@
     <button class="chip" data-state="claudemd"><b>⌘⇧M</b>CLAUDE.md</button>
     <button class="chip" data-state="theme">themes</button>
   </div>
-  <p class="demo-note">Real screenshots — tterm took them of itself.<span class="hint-key"> Click the window, then use the real chords.</span></p>
+  <p class="demo-note">Real screenshots — tterm took them of itself.<span class="hint-key"> The real chords work right here: ⌘K, ⌘G, ⌘B… or arrow through. esc resets.</span></p>
 </div>
 
 <!-- self-hosting -->
@@ -353,58 +353,115 @@
     find:     '⌘F — find in terminal, browser, or file',
     diff:     '⌘G — diff review, stage hunk by hunk',
     browser:  '⌘B — a real Chromium tab',
-    claudemd: '⌘⇧M — the project’s CLAUDE.md',
+    claudemd: '⌘⇧M — the project\u2019s CLAUDE.md',
     theme:    'themes — pick a look from the palette',
   };
+  const ORDER = Object.keys(STATES);
   const img = document.getElementById('demo-img');
   const title = document.getElementById('demo-title');
   const chips = document.getElementById('demo-chips');
   const demo = document.querySelector('.demo');
+  let current = 'base';
+  let interacted = false;
 
-  // preload the other states on first intent, not at page load
-  let preloaded = false;
-  function preload() {
-    if (preloaded) return;
-    preloaded = true;
-    Object.keys(STATES).forEach((s) => { const i = new Image(); i.src = 'shots/' + s + '.png'; });
+  title.setAttribute('aria-live', 'polite');
+
+  // ---- preload: all states, off the critical path ----
+  const loaded = new Set(['base']);
+  function preloadAll() {
+    ORDER.forEach((st) => {
+      if (loaded.has(st)) return;
+      const i = new Image();
+      i.onload = () => loaded.add(st);
+      i.src = 'shots/' + st + '.png';
+    });
   }
-  demo.addEventListener('pointerover', preload, { once: true });
-  demo.addEventListener('focus', preload, { once: true });
-  chips.addEventListener('pointerover', preload, { once: true });
+  if (document.readyState === 'complete') preloadAll();
+  else window.addEventListener('load', () => {
+    ('requestIdleCallback' in window) ? requestIdleCallback(preloadAll) : setTimeout(preloadAll, 800);
+  });
 
+  // ---- state machine ----
   function show(state) {
-    if (!STATES[state]) return;
+    if (!STATES[state] || state === current) return;
+    current = state;
     img.src = 'shots/' + state + '.png';
     img.alt = 'tterm — ' + STATES[state];
     title.textContent = STATES[state];
     for (const c of chips.children) c.classList.toggle('active', c.dataset.state === state);
   }
+  // a broken screenshot never leaves a dead demo
+  img.addEventListener('error', () => {
+    if (!img.src.endsWith('/base.png')) { current = ''; show('base'); }
+  });
+
+  function step(dir) {
+    const i = (ORDER.indexOf(current) + dir + ORDER.length) % ORDER.length;
+    show(ORDER[i]);
+  }
+
+  // ---- interactions ----
+  function markInteracted() { interacted = true; stopAttract(); }
 
   chips.addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
+    markInteracted();
     show(chip.dataset.state);
-    demo.focus();
   });
-  demo.addEventListener('click', () => demo.focus());
+  demo.addEventListener('pointerdown', markInteracted);
 
-  demo.addEventListener('keydown', (e) => {
+  // the real chords work whenever the demo is mostly on screen — no click
+  // needed; checked synchronously so it can never go stale mid-scroll
+  function demoVisible() {
+    const r = demo.getBoundingClientRect();
+    const overlap = Math.min(r.bottom, innerHeight) - Math.max(r.top, 0);
+    return overlap > 0.55 * Math.min(r.height, innerHeight);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!demoVisible() && !demo.contains(document.activeElement)) return;
     const k = e.key.toLowerCase();
     let state = null;
     if (e.key === 'Escape') state = 'base';
+    else if (e.key === 'ArrowRight') { markInteracted(); e.preventDefault(); step(1); return; }
+    else if (e.key === 'ArrowLeft') { markInteracted(); e.preventDefault(); step(-1); return; }
     else if (e.metaKey && e.shiftKey && k === 'f') state = 'search';
     else if (e.metaKey && e.shiftKey && k === 'm') state = 'claudemd';
-    else if (e.metaKey && !e.shiftKey && k === 'k') state = 'palette';
-    else if (e.metaKey && !e.shiftKey && k === 'o') state = 'projects';
-    else if (e.metaKey && !e.shiftKey && k === 'p') state = 'quickopen';
-    else if (e.metaKey && !e.shiftKey && k === 'f') state = 'find';
-    else if (e.metaKey && !e.shiftKey && k === 'g') state = 'diff';
-    else if (e.metaKey && !e.shiftKey && k === 'b') state = 'browser';
+    else if (e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey) {
+      if (k === 'k') state = 'palette';
+      else if (k === 'o') state = 'projects';
+      else if (k === 'p') state = 'quickopen';
+      else if (k === 'f') state = 'find';
+      else if (k === 'g') state = 'diff';
+      else if (k === 'b') state = 'browser';
+    }
     if (state) {
+      markInteracted();
       e.preventDefault();
       show(state);
     }
   });
+
+  // ---- attract mode: cycle the tour until the visitor takes over ----
+  let attractTimer = null;
+  const TOUR = ['base', 'palette', 'projects', 'diff', 'browser', 'claudemd'];
+  function stopAttract() {
+    if (attractTimer) { clearInterval(attractTimer); attractTimer = null; }
+  }
+  function maybeStartAttract() {
+    if (interacted || attractTimer) return;
+    if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+    let i = 0;
+    attractTimer = setInterval(() => {
+      if (!demoVisible() || interacted) return;
+      i = (i + 1) % TOUR.length;
+      if (loaded.has(TOUR[i]) || TOUR[i] === 'base') show(TOUR[i]);
+    }, 3600);
+  }
+  demo.addEventListener('pointerenter', stopAttract);
+  demo.addEventListener('pointerleave', () => { if (!interacted) maybeStartAttract(); });
+  setTimeout(maybeStartAttract, 4500);
 })();
 </script>
 <script data-goatcounter="https://tanay.goatcounter.com/count"
