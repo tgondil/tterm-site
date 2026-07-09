@@ -9,6 +9,9 @@
 <meta property="og:description" content="A terminal, a real browser, and Claude Code under one roof. It edits itself and hot-reloads. Free, for hobbyists.">
 <link rel="canonical" href="https://tterm.sh/">
 <meta property="og:url" content="https://tterm.sh/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="tterm">
+<meta name="twitter:title" content="tterm — the only window you need">
 <meta property="og:image" content="https://tterm.sh/shots/base.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://tterm.sh/shots/base.png">
@@ -196,7 +199,10 @@
     font-weight: 640; color: var(--bright);
   }
   .install .actions { margin-top: 34px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .install .fineprint { margin-top: 22px; font-size: 13.5px; color: var(--dim); line-height: 1.7; }
+  .install .req { margin-top: 20px; font-size: 14px; color: var(--text); }
+  .install .req a { color: var(--accent); }
+  .install .req a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .install .fineprint { margin-top: 14px; font-size: 13.5px; color: var(--dim); line-height: 1.7; }
   .install .fineprint .mono { font-family: var(--font-mono); color: var(--bright); font-size: 12.5px; }
   .install .cmd {
     display: inline-flex; align-items: center; gap: 10px; margin-top: 14px;
@@ -283,7 +289,7 @@
     <a class="pill primary" href="#install">Download for macOS ↓</a>
     <a class="pill" href="shortcuts.html">See every shortcut →</a>
   </div>
-  <p class="hero-note">Free — no account, no telemetry. One developer's daily driver, shared.</p>
+  <p class="hero-note">Free. The app has no account and no telemetry — it phones nothing home. One developer's daily driver, shared.</p>
 </header>
 
 <!-- interactive demo: real screenshots, real shortcuts -->
@@ -370,12 +376,13 @@
     <a class="pill primary" href="https://github.com/tgondil/tterm-site/releases/latest/download/tterm.zip">Download tterm for macOS ↓</a>
     <a class="pill" href="shortcuts.html">Learn the chords →</a>
   </div>
+  <p class="req">Apple silicon (M1 or later) · macOS 12+ · <a href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a> installed. Intel Macs aren't supported.</p>
   <p class="fineprint">
-    Apple silicon macOS. Unzip, drag <span class="mono">tterm.app</span> to Applications, then clear the download flag:
+    Unzip, drag <span class="mono">tterm.app</span> to Applications, then clear the download flag:
   </p>
   <div class="cmd"><code>xattr -dr com.apple.quarantine /Applications/tterm.app</code><button class="copy" onclick="navigator.clipboard.writeText('xattr -dr com.apple.quarantine /Applications/tterm.app');this.textContent='copied'">copy</button></div>
   <p class="fineprint">
-    It&apos;s an unsigned hobby build, so macOS quarantines it until you run that once (or right-click → Open, then Open Anyway under System Settings → Privacy &amp; Security). No account, no telemetry, nothing phoning home.
+    It&apos;s an ad-hoc-signed hobby build (not notarized), so macOS quarantines it until you run that once (or right-click → Open, then Open Anyway under System Settings → Privacy &amp; Security). No account, no telemetry, nothing phoning home.
   </p>
 </section>
 </div>
