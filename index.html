@@ -93,10 +93,10 @@
   header.wrap { padding: 48px 24px 48px; position: relative; }
   .hero-backdrop {
     position: absolute; top: -36px; right: -48px;
-    width: min(900px, 70%); height: auto; opacity: 0.55;
+    width: min(1150px, 84%); height: auto; opacity: 0.7;
     pointer-events: none; user-select: none; z-index: -1;
-    -webkit-mask-image: radial-gradient(ellipse 60% 58% at 60% 44%, black 35%, transparent 95%);
-    mask-image: radial-gradient(ellipse 60% 58% at 60% 44%, black 35%, transparent 95%);
+    -webkit-mask-image: radial-gradient(ellipse 64% 62% at 58% 44%, black 40%, transparent 97%);
+    mask-image: radial-gradient(ellipse 64% 62% at 58% 44%, black 40%, transparent 97%);
   }
   h1 {
     font-size: clamp(40px, 8vw, 84px);
@@ -153,6 +153,27 @@
   @media (forced-colors: active) {
     .chip.active { outline: 2px solid ButtonText; }
   }
+
+  /* ---- section word-art backdrops: full-bleed, centered on the wrap ---- */
+  .showcase, #demo { position: relative; }
+  .section-art {
+    position: absolute; z-index: -1; height: auto;
+    left: 50%; transform: translateX(-50%);
+    width: min(1750px, 128%); opacity: .7;
+    pointer-events: none; user-select: none;
+    -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 45%, black 45%, transparent 97%);
+    mask-image: radial-gradient(ellipse 72% 72% at 50% 45%, black 45%, transparent 97%);
+  }
+  .art-wind {
+    bottom: -70px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+  .art-itself { top: -70px; }
+  .art-rowwaves { top: -60px; }
+  .art-compass { top: -90px; }
+  .art-lighthouse { top: -40px; }
+  /* motion lives in art.js — a live simulation drawn to these canvases */
 
   /* ---- showcases: one line, one huge image ---- */
   .showcase { padding-block: var(--sp-lg); }
@@ -257,6 +278,7 @@
     .nav-links { display: none; }
     .titlebar .title { display: none; }
     .hide-narrow { display: none; }
+    .section-art { display: none; }
     .hero-backdrop {
       width: 420px; top: -12px; right: -64px; opacity: 0.45;
       -webkit-mask-image: radial-gradient(ellipse 55% 55% at 62% 40%, black 35%, transparent 92%);
@@ -282,7 +304,7 @@
 </nav>
 
 <header id="top" class="wrap">
-  <img class="hero-backdrop" src="seascape.svg" width="1200" height="780" alt="" aria-hidden="true">
+  <canvas class="hero-backdrop" data-art="hero" width="1200" height="780" aria-hidden="true"></canvas>
   <h1>The only window<br>you need.</h1>
   <p class="hero-sub">A terminal, a real browser, and Claude Code — under one roof.</p>
   <div class="hero-actions">
@@ -294,6 +316,7 @@
 
 <!-- interactive demo: real screenshots, real shortcuts -->
 <div class="wrap" id="demo">
+  <canvas class="section-art art-wind" data-art="wind" width="1600" height="520" aria-hidden="true"></canvas>
   <div class="demo" tabindex="0" role="region" aria-label="Interactive tterm demo. Focus and press the real keyboard shortcuts to switch views.">
     <div class="window">
       <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title" id="demo-title">tterm — two projects, two Claudes</span></div>
@@ -317,6 +340,7 @@
 
 <!-- self-hosting -->
 <section id="self" class="wrap showcase">
+  <canvas class="section-art art-itself" data-art="itself" width="1600" height="760" aria-hidden="true"></canvas>
   <h2>Change it from the inside.</h2>
   <p><span class="kbd">⌘K</span> → <em>Claude on tterm itself</em> — ask for a feature and the running app hot-reloads with it. Most of tterm was built this way.</p>
   <div class="window">
@@ -327,6 +351,7 @@
 
 <!-- rows -->
 <section id="rows" class="wrap showcase">
+  <canvas class="section-art art-rowwaves" data-art="rowwaves" width="1600" height="520" aria-hidden="true"></canvas>
   <h2>Every project is a row.</h2>
   <p>Explorer, Claude Code, file viewer — stack as many projects as you're juggling.</p>
   <div class="window">
@@ -337,6 +362,7 @@
 
 <!-- browser -->
 <section id="browser" class="wrap showcase">
+  <canvas class="section-art art-compass" data-art="compass" width="1600" height="660" aria-hidden="true"></canvas>
   <h2>A real browser lives here.</h2>
   <p><span class="kbd">⌘B</span> — your Chrome cookies, bookmarks, and history come along.</p>
   <div class="window">
@@ -347,6 +373,7 @@
 
 <!-- review -->
 <section id="review" class="wrap showcase">
+  <canvas class="section-art art-lighthouse" data-art="lighthouse" width="1600" height="780" aria-hidden="true"></canvas>
   <h2>Review, don't retype.</h2>
   <p>No editor, on purpose. <span class="kbd">⌘G</span> — stage what's right, hunk by hunk, and commit.</p>
   <div class="window">
@@ -356,7 +383,7 @@
 </section>
 
 <div class="closing">
-<img class="sea-backdrop" src="closing.svg" width="1600" height="950" alt="" aria-hidden="true">
+<canvas class="sea-backdrop" data-art="closing" width="1600" height="950" aria-hidden="true"></canvas>
 <!-- credo -->
 <div class="credo wrap">
   <h2><span class="y">⌃ is yours.</span> ⌘ is tterm's.</h2>
@@ -398,6 +425,7 @@
   </div>
 </footer>
 
+<script src="art.js" defer></script>
 <script>
 (() => {
   const STATES = {
