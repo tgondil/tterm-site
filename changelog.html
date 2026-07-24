@@ -16,6 +16,7 @@
     --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { overflow-x: clip; } /* clip full-bleed backdrops at the viewport (body clip does not propagate); no scroll container, so sticky nav still works */
   @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   body {
     background: var(--bg); color: var(--text); font-family: var(--font-ui);
