@@ -180,11 +180,13 @@
 <!-- browser -->
 <section class="wrap showcase">
   <canvas class="section-art art-compass" data-art="compass" width="1600" height="660" aria-hidden="true"></canvas>
-  <h2>The browser got fast, and signs in.</h2>
-  <p>Multi-step web tasks run in one shot with <em>browser_act</em>, and a same-page action settles in ~130ms instead of a fixed floor. The pane now presents as real Google Chrome, so account sign-in stops saying <em>this browser may not be secure</em>.</p>
+  <h2>It browses and codes, end to end.</h2>
+  <p>Give it a real job and watch: here it opens Hacker News, reads the top story, writes a Python script that prints it, and runs it — browser and code in one go. Multi-step web tasks run in one shot with <em>browser_act</em>, a same-page action settles in ~130ms, and the pane presents as real Google Chrome so Google sign-in works.</p>
   <div class="window">
-    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘B — a real Chromium tab, signed in</span></div>
-    <img src="shots/browser.png" loading="lazy" width="1600" height="1000" alt="A real Chromium browser tab running inside tterm." />
+    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">read HN → write a script → run it</span></div>
+    <video autoplay muted loop playsinline poster="media/webcode.png">
+      <source src="media/webcode.mp4" type="video/mp4" />
+    </video>
   </div>
 </section>
 
@@ -194,8 +196,10 @@
   <h2>Point at tterm to change it.</h2>
   <p><span class="kbd">⌘⇧E</span> — click any part of the app and the assistant is scoped to exactly the files that draw it. Every scoped self-change is snapshotted first, so <em>Revert Last Self-Change</em> always has your back.</p>
   <div class="window">
-    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘⇧E — tterm editing its own source</span></div>
-    <img src="shots/selfedit.png" loading="lazy" width="1600" height="1000" alt="tterm with a Claude session editing tterm's own source." />
+    <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘⇧E — click a component to scope the change</span></div>
+    <video autoplay muted loop playsinline poster="media/picker.png">
+      <source src="media/picker.mp4" type="video/mp4" />
+    </video>
   </div>
 </section>
 
