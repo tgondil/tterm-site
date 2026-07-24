@@ -210,20 +210,6 @@
   .install .req a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .install .fineprint { margin-top: 14px; font-size: 13.5px; color: var(--dim); line-height: 1.7; }
   .install .fineprint .mono { font-family: var(--font-mono); color: var(--bright); font-size: 12.5px; }
-  .install .cmd {
-    display: inline-flex; align-items: center; gap: 10px; margin-top: 14px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
-    padding: 10px 12px 10px 16px; max-width: 100%; overflow-x: auto;
-  }
-  .install .cmd code {
-    font-family: var(--font-mono); font-size: 13px; color: var(--text); white-space: nowrap;
-  }
-  .install .cmd .copy {
-    flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--dim);
-    background: var(--raised); border: 1px solid var(--line); border-radius: 7px;
-    padding: 5px 11px; cursor: pointer;
-  }
-  .install .cmd .copy:hover { color: var(--bright); border-color: var(--accent-dim); }
 
   /* ---- closing section, with the sea behind it ---- */
   .closing { position: relative; overflow: hidden; }
@@ -390,11 +376,7 @@
   </div>
   <p class="req">Apple silicon (M1 or later) · macOS 12+ · <a href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a> installed. Intel Macs aren't supported.</p>
   <p class="fineprint">
-    Unzip, drag <span class="mono">tterm.app</span> to Applications, then clear the download flag:
-  </p>
-  <div class="cmd"><code>xattr -dr com.apple.quarantine /Applications/tterm.app</code><button class="copy" onclick="navigator.clipboard.writeText('xattr -dr com.apple.quarantine /Applications/tterm.app');this.textContent='copied'">copy</button></div>
-  <p class="fineprint">
-    It&apos;s an ad-hoc-signed hobby build (not notarized), so macOS quarantines it until you run that once (or right-click → Open, then Open Anyway under System Settings → Privacy &amp; Security). No account, no telemetry, nothing phoning home.
+    Unzip, drag <span class="mono">tterm.app</span> to Applications, and open it. It&apos;s notarized by Apple, so there&apos;s no security warning to click past. No account, no telemetry, nothing phoning home.
   </p>
 </section>
 </div>
