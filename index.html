@@ -129,7 +129,8 @@
     font-family: var(--font-mono);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .window img { width: 100%; height: auto; display: block; }
+  .window img,
+  .window video { width: 100%; height: auto; display: block; }
 
   /* ---- interactive demo ---- */
   .demo { position: relative; cursor: pointer; border-radius: 16px; }
@@ -349,7 +350,9 @@
   <p><span class="kbd">⌘K</span> → <em>Claude on tterm itself</em> — ask for a feature and the running app hot-reloads with it. Most of tterm was built this way.</p>
   <div class="window">
     <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘⇧M — tterm reading its own CLAUDE.md</span></div>
-    <img src="shots/selfedit.png" loading="lazy" width="1600" height="1000" alt="tterm with a Claude Code session editing tterm's own source, its store.ts open in the file viewer.">
+    <video autoplay muted loop playsinline width="1600" height="1000" poster="media/self.png" aria-label="tterm with a Claude Code session editing tterm's own source, its store.ts open in the file viewer, and a feature request being typed into the assistant.">
+      <source src="media/self.mp4" type="video/mp4" />
+    </video>
   </div>
 </section>
 
@@ -360,7 +363,9 @@
   <p>Explorer, Claude Code, file viewer — stack as many projects as you're juggling.</p>
   <div class="window">
     <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">tanayterm + sailboat</span></div>
-    <img src="shots/rows3.png" loading="lazy" width="1600" height="1000" alt="Three project rows stacked vertically, each with its own explorer, Claude Code pane, and file viewer.">
+    <video autoplay muted loop playsinline width="1600" height="1000" poster="media/rows.png" aria-label="Three project rows stacked vertically, each with its own explorer, Claude Code pane, and file viewer.">
+      <source src="media/rows.mp4" type="video/mp4" />
+    </video>
   </div>
 </section>
 
@@ -371,7 +376,9 @@
   <p><span class="kbd">⌘B</span> — your Chrome cookies, bookmarks, and history come along.</p>
   <div class="window">
     <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘B — a Chromium tab, favicons and all</span></div>
-    <img src="shots/browser.png" loading="lazy" width="1600" height="1000" alt="A real Chromium browser tab inside tterm with a bookmarks bar imported from Chrome.">
+    <video autoplay muted loop playsinline width="1600" height="1000" poster="media/browser.png" aria-label="A real Chromium browser tab inside tterm with a bookmarks bar imported from Chrome.">
+      <source src="media/browser.mp4" type="video/mp4" />
+    </video>
   </div>
 </section>
 
@@ -382,7 +389,9 @@
   <p>No editor, on purpose. <span class="kbd">⌘G</span> — stage what's right, hunk by hunk, and commit.</p>
   <div class="window">
     <div class="titlebar"><div class="lights"><i></i><i></i><i></i></div><span class="title">⌘G — diff review</span></div>
-    <img src="shots/diff.png" loading="lazy" width="1600" height="1000" alt="Diff review mode showing a side-by-side diff with stage hunk, unstage, and discard controls.">
+    <video autoplay muted loop playsinline width="1600" height="1000" poster="media/review.png" aria-label="Diff review mode showing a side-by-side diff with stage hunk, unstage, and discard controls.">
+      <source src="media/review.mp4" type="video/mp4" />
+    </video>
   </div>
 </section>
 
