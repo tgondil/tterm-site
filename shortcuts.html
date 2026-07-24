@@ -205,6 +205,7 @@
     <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Clear terminal</td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘=</kbd> / <kbd>⌘−</kbd> / <kbd>⌘0</kbd></td><td class="what">Zoom in / out / reset <small>terminal font or browser page — whichever is focused</small></td><td class="cam"></td></tr>
     <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Save / load a pane layout</td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Send a test notification <small>check that macOS alerts from tterm fire when a run needs you</small></td><td class="cam"></td></tr>
   </table>
 </section>
 
@@ -220,6 +221,15 @@
     <tr><td class="keys"><kbd>⌘F</kbd></td><td class="what">Find <small>in the focused terminal, browser page, or file</small></td><td class="cam"><button data-shot="find">view</button></td></tr>
     <tr><td class="keys"><kbd>⌘⇧M</kbd></td><td class="what">Open the project's CLAUDE.md</td><td class="cam"><button data-shot="claudemd">view</button></td></tr>
     <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Select theme · open keybindings.json</td><td class="cam"><button data-shot="theme">view</button></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="assistant">
+  <h2>Assistant</h2>
+  <p class="group-note">A Claude that lives in the sidebar and can act, and it rebuilds tterm from the inside.</p>
+  <table>
+    <tr><td class="keys"><kbd>⌘⇧J</kbd></td><td class="what">Toggle the workspace assistant <small>it sees your project, terminals, diffs, and open browser, and does the work: edits files, runs commands, drives the browser</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧E</kbd></td><td class="what">Improve tterm <small>click any part of tterm's own UI; the component is scoped to its source and handed to the assistant. Every self-change is checkpointed first</small></td><td class="cam"></td></tr>
   </table>
 </section>
 
@@ -243,9 +253,11 @@
     <tr><td class="keys"><kbd>⌘L</kbd></td><td class="what">Focus URL bar</td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘R</kbd></td><td class="what">Reload page</td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘[</kbd> / <kbd>⌘]</kbd></td><td class="what">Back / forward</td><td class="cam"></td></tr>
+    <tr><td class="keys"><kbd>⌘⇧V</kbd></td><td class="what">Send page to Claude <small>a screenshot plus the console of the focused browser page, handed straight to a Claude Code pane</small></td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘⇧A</kbd></td><td class="what">New claude.ai tab</td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘⇧G</kbd></td><td class="what">New chatgpt.com tab</td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘⇧K</kbd></td><td class="what">Cowork <small>fullscreen the Claude desktop app; press again to come back — works from anywhere</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Open a browser split <small>a Chromium pane beside the current one</small></td><td class="cam"></td></tr>
     <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Import Chrome cookies <small>logins come across; also runs on launch</small></td><td class="cam"></td></tr>
   </table>
 </section>
@@ -257,6 +269,9 @@
     <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Claude on tterm itself <small>opens a Claude Code pane on tterm's source</small></td><td class="cam"></td></tr>
     <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Rebuild &amp; install tterm.app <small>then relaunch — self-update in two actions</small></td><td class="cam"></td></tr>
     <tr><td class="keys"><kbd>⌘⇧R</kbd></td><td class="what">Hot-reload the renderer <small>with dev-mount, edits to source reload live</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Toggle dev-mount <small>load the renderer from your source checkout, so edits hot-reload live</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">Revert last self-change <small>roll back tterm's most recent self-edit to its git checkpoint</small></td><td class="cam"></td></tr>
+    <tr><td class="keys"><span class="palette-only">⌘K palette</span></td><td class="what">About tterm <small>version and commit; opens the changelog</small></td><td class="cam"></td></tr>
   </table>
 </section>
 
