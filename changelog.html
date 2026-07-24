@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tterm — changelog</title>
+<meta name="description" content="What's new in tterm. Release notes and demos." />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<style>
+  :root {
+    --bg: #0c0e12; --panel: #12151c; --raised: #1a1e28; --line: #1e2431;
+    --text: #c8ccd4; --bright: #e8ecf4; --dim: #7c86a3; --dimmer: #565f89;
+    --accent: #7aa2f7; --accent-dim: #2e3c64;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--font-ui);
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(30, 36, 49, 0.6);
+  }
+  .nav-inner {
+    max-width: 1000px; margin: 0 auto; padding: 0 24px;
+    height: 58px; display: flex; align-items: center; gap: 28px;
+  }
+  .wordmark { font-family: var(--font-mono); font-size: 17px; font-weight: 600; color: var(--bright); }
+  .wordmark .cursor {
+    display: inline-block; width: 8px; height: 16px; margin-left: 3px; vertical-align: -2px;
+    background: var(--accent); animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .nav-links { display: flex; gap: 22px; margin-left: auto; font-size: 14px; color: var(--dim); }
+  .nav-links a:hover { color: var(--bright); }
+  .nav-links a.active { color: var(--bright); }
+
+  /* hero */
+  header { position: relative; padding: 92px 0 40px; overflow: hidden; }
+  .hero-backdrop {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0.5; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+    mask-image: linear-gradient(180deg, #000 55%, transparent); pointer-events: none;
+  }
+  header .wrap { position: relative; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+  h1 { font-size: clamp(28px, 4.6vw, 40px); line-height: 1.12; letter-spacing: -0.02em; color: var(--bright); font-weight: 680; overflow-wrap: break-word; }
+  .release-meta { margin-top: 14px; color: var(--dim); font-size: 15px; }
+  .release-meta code { font-family: var(--font-mono); color: var(--text); }
+  .lede { margin-top: 20px; max-width: 620px; color: var(--text); font-size: 17px; }
+
+  /* feature entries */
+  main { padding: 24px 0 40px; }
+  .entry {
+    border-top: 1px solid var(--line); padding: 48px 0;
+    display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center;
+  }
+  .entry:nth-child(even) .entry-media { order: -1; }
+  .entry-body h2 { font-size: 24px; letter-spacing: -0.01em; color: var(--bright); font-weight: 640; }
+  .entry-body .tag {
+    display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent); background: var(--accent-dim);
+    border-radius: 999px; padding: 3px 10px; margin-bottom: 12px;
+  }
+  .entry-body ul { list-style: none; margin-top: 14px; }
+  .entry-body li { position: relative; padding-left: 20px; margin: 9px 0; color: var(--text); }
+  .entry-body li::before { content: '›'; position: absolute; left: 2px; color: var(--accent); }
+  .entry-body kbd {
+    font-family: var(--font-mono); font-size: 11px; color: var(--bright);
+    background: var(--raised); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px;
+  }
+
+  /* the Screen Studio-style frame, in pure CSS: gradient panel, rounded, soft shadow */
+  .entry-media {
+    border-radius: 16px; padding: 22px;
+    background: radial-gradient(120% 120% at 30% 0%, #1b2130 0%, #0e1119 70%);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  }
+  .shot {
+    display: block; width: 100%; height: auto; border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.65);
+    background: #0c0e12; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left;
+  }
+  .shot-caption { margin-top: 14px; font-size: 12.5px; color: var(--dimmer); font-family: var(--font-mono); text-align: center; }
+  /* a placeholder shown for feature clips not yet recorded */
+  .slot {
+    aspect-ratio: 16 / 10; border-radius: 9px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 24px;
+    color: var(--dim); background: repeating-linear-gradient(135deg, #10141d, #10141d 12px, #0e121a 12px, #0e121a 24px);
+    border: 1px dashed var(--line);
+  }
+  .slot .slot-icon { font-size: 22px; opacity: 0.7; }
+  .slot .slot-file { font-family: var(--font-mono); font-size: 11px; color: var(--dimmer); }
+
+  footer { border-top: 1px solid var(--line); padding: 40px 0 60px; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+  footer a:hover { color: var(--bright); }
+  .foot-links { margin-left: auto; display: flex; gap: 20px; }
+
+  @media (max-width: 760px) {
+    .entry { grid-template-columns: 1fr; gap: 24px; }
+    .entry:nth-child(even) .entry-media { order: 0; }
+    h1 { font-size: 32px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html">tterm<span class="cursor"></span></a>
+    <div class="nav-links">
+      <a href="index.html#self">Self-building</a>
+      <a href="index.html#browser">Browser</a>
+      <a href="shortcuts.html">Shortcuts</a>
+      <a href="changelog.html" class="active">Changelog</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <canvas class="hero-backdrop" data-art="hero" width="1200" height="620" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow">Update · v0.2.0</div>
+    <h1>The week tterm learned to work for you<br />and to improve itself, safely.</h1>
+    <div class="release-meta">Released 2026-07-24 · <code>v0.2.0</code></div>
+    <p class="lede">
+      A built-in assistant that actually does the work, a browser agent that's fast and
+      signs into Google, click-to-scope self-improvement with a version-control safety net,
+      and a reliability sweep underneath it all.
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="entry">
+    <div class="entry-body">
+      <span class="tag">Assistant</span>
+      <h2>A workspace assistant that does the work</h2>
+      <ul>
+        <li>Lives in the sidebar (<kbd>⌘⇧J</kbd>); sees your project, terminals, changes, and browser, and edits, runs, and drives to finish tasks.</li>
+        <li>One-click <strong>Sign in to Claude</strong> with auto-retry the moment login lands.</li>
+        <li>Durable project memory, an authoritative environment block (so it never asks your timezone), and markdown replies.</li>
+        <li>Leaner tokens: per-message context capped on a fresh run, a compact delta on follow-ups.</li>
+      </ul>
+    </div>
+    <figure class="entry-media">
+      <video class="shot" autoplay muted loop playsinline poster="media/assistant.png">
+        <source src="media/assistant.mp4" type="video/mp4" />
+      </video>
+      <figcaption class="shot-caption">the assistant, docked in the sidebar</figcaption>
+    </figure>
+  </section>
+
+  <section class="entry">
+    <div class="entry-body">
+      <span class="tag">Browser agent</span>
+      <h2>Fast, and it signs into Google</h2>
+      <ul>
+        <li><strong>browser_act</strong> runs a whole sequence in one call — one model round-trip instead of one per action.</li>
+        <li>Adaptive settle: a same-page action returns in ~130ms instead of a fixed 320ms floor.</li>
+        <li>The embedded browser presents as real Google Chrome (UA + client hints), fixing the "this browser may not be secure" wall.</li>
+        <li>Chrome logins auto-import on launch; the launch toast reports your real Google sign-in state.</li>
+      </ul>
+    </div>
+    <figure class="entry-media">
+      <video class="shot" autoplay muted loop playsinline poster="media/commands.png">
+        <source src="media/browser-agent.mp4" type="video/mp4" />
+      </video>
+      <figcaption class="shot-caption">record: the agent booking a calendar event · media/browser-agent.mp4</figcaption>
+    </figure>
+  </section>
+
+  <section class="entry">
+    <div class="entry-body">
+      <span class="tag">Self-improvement</span>
+      <h2>Point at any part of tterm to improve it</h2>
+      <ul>
+        <li><strong>Click-to-scope picker</strong> (<kbd>⌘⇧E</kbd>): the component under your cursor is resolved to its source files and handed to the assistant as a tight scope.</li>
+        <li>Containerized change: <code>verify-self</code> builds without touching the running app; one real build hot-reloads atomically.</li>
+        <li>Version-control safety rail: a scoped self-change snapshots the tree first, so it's undoable via <strong>Revert Last Self-Change</strong> (<kbd>⌘K</kbd>).</li>
+        <li>Reloads are gated on a completed build, so a bad change degrades to a recovery page instead of a white screen.</li>
+      </ul>
+    </div>
+    <figure class="entry-media">
+      <video class="shot" autoplay muted loop playsinline poster="media/picker.png">
+        <source src="media/picker.mp4" type="video/mp4" />
+      </video>
+      <figcaption class="shot-caption">⌘⇧E — click a component to scope the change</figcaption>
+    </figure>
+  </section>
+
+  <section class="entry">
+    <div class="entry-body">
+      <span class="tag">Craft</span>
+      <h2>Live word-art, and a mascot that sails</h2>
+      <ul>
+        <li>A physics-driven word-art engine: sidebar backdrops, capsized-pane error art, themed typed seascapes.</li>
+        <li>A typed-sailboat mascot in the assistant header — it drifts when idle and sails hard while a task runs.</li>
+        <li>The motion above this page is that same engine, running live.</li>
+      </ul>
+    </div>
+    <figure class="entry-media">
+      <canvas class="shot" data-art="wind" width="1600" height="1000" aria-hidden="true"></canvas>
+      <figcaption class="shot-caption">the word-art engine, running live</figcaption>
+    </figure>
+  </section>
+
+  <section class="entry">
+    <div class="entry-body">
+      <span class="tag">Foundations</span>
+      <h2>Reliability &amp; release identity</h2>
+      <ul>
+        <li>Atomic state writes so a crash can't corrupt your session or memory; corrupt memory is quarantined, not erased.</li>
+        <li>Unhandled errors are logged, not fatal; browser tools cap at 30s; download and tab races fixed.</li>
+        <li>The explorer remembers open folders per project across launches.</li>
+        <li>tterm now reports its version, commit, and build time — <strong>About tterm</strong> (<kbd>⌘K</kbd>) and a badge on the empty state open this page.</li>
+      </ul>
+    </div>
+    <figure class="entry-media">
+      <img class="shot" src="media/commands.png" alt="The command palette with About and Revert actions" loading="lazy" />
+      <figcaption class="shot-caption">⌘K — every command, including Revert Last Self-Change</figcaption>
+    </figure>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>tterm · v0.2.0</span>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="shortcuts.html">Shortcuts</a>
+      <a href="index.html#install">Download</a>
+    </div>
+  </div>
+</footer>
+
+<script src="art.js" defer></script>
+</body>
+</html>
